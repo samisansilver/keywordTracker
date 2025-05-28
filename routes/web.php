@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GoogleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('/fetch', [GoogleController::class, 'fetchSearchData']);
+
 Route::get('/', function () {
     return view('welcome');
 });
+
