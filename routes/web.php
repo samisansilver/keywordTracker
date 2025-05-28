@@ -16,7 +16,9 @@ use App\Http\Controllers\GoogleController;
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('callback', [GoogleController::class, 'handleGoogleCallback']);
-Route::get('/fetch', [GoogleController::class, 'fetchSearchData']);
+Route::post('fetch', [GoogleController::class, 'fetchSearchData'])->name('fetch');
+Route::get('refresh', [GoogleController::class, 'refreshAccessToken']);
+Route::view('get', 'getquery');
 
 Route::get('/', function () {
     return view('welcome');
