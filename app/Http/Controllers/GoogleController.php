@@ -36,8 +36,9 @@ class GoogleController extends Controller
         return redirect('/dashboard'); // یا هر مسیری که نیاز دارید
     }
 
-    public function fetchSearchData()
+    public function fetchSearchData(Request $request)
     {
+        $page = $request->input('page');
         $accessToken = session('google_access_token');
 
         $response = Http::withToken($accessToken)
@@ -49,9 +50,9 @@ class GoogleController extends Controller
                     [
                         'filters' => [
                             [
-                                'dimension' => 'query',
-                                'operator' => 'equals',
-                                'expression' => 'موبایل'
+                                'dimension' => 'page',
+                                'operator' => 'contains',
+                                'expression' => $page
                             ]
                         ]
                     ]
@@ -59,7 +60,20 @@ class GoogleController extends Controller
                 'rowLimit' => 10
             ]);
 
-        return $response->json();
+        return response()->json(
+            collect($response['rows'])->map(function ($item) {
+                return [
+                    'key' => $item['keys'][0] ?? null,
+                    'impressions' => $item['impressions'],
+                    'ctr' => $item['ctr'],
+                    'clicks' => $item['clicks'],
+                    'position' => $item['position'],
+                ];
+            })
+        );
+
+
+
     }
 
     public function refreshAccessToken()
